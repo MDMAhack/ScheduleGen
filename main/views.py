@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import json
 from django.http import HttpResponse
-from algorithm import Room, Prof, Course, hours
+from algorithm import *
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -11,9 +11,22 @@ profs = []
 courses = []
 
 def init_data(data):
+    global rooms
+    global profs
+    global courses
+    global grade_courses
+
+    grade_courses = {'freshman':set(), 'sophomore':set(), 'junior':set(), 'senior':set()}
+    rooms = {}
+    profs = []
+    courses = []
+
+
+
     for room_dic in data['rooms']:
         if not (room_dic['type'] in rooms.keys()):
             rooms[room_dic['type']] = []
+        print('Fuck you', int(room_dic['capacity']))
         rooms[room_dic['type']].append(Room(int(room_dic['capacity']), room_dic['name'], []))
 
     for course_dic in data['courses']:
@@ -25,13 +38,15 @@ def init_data(data):
 
         for section_number in range(int(course_dic['sectionCnt'])):
             class_list = []
-            for class_type in course_dic['classList']:
-                class_list.append(class_type)
+            for class_dic in course_dic['classList']:
+                class_list.append(class_dic['type'])
             section_id = course_name + str(section_number)
             tmp_section = Section(section_id, class_list)
             section_list.append(tmp_section)
 
         courses.append(Course(course_id, capacity, course_name, grade, section_list))
+        grade_courses[grade].add(courses[-1])
+        #print(grade + ' : ', grade_courses[grade])
 
     for prof_dic in data['profs']:
         time_list = []
@@ -39,7 +54,7 @@ def init_data(data):
             if not isAvailable:
                 time = str(i // 6 + 1) + hours[i % 6]
                 time_list.append(time)
-        profs.append(Prof(prof_dic['rank'], prof_dic['name'], time_list))
+        profs.append(Prof(int(prof_dic['rank']), prof_dic['name'], time_list))
 
         for course_id in prof_dic['coursesAvailable']:
             for course in courses:
@@ -51,8 +66,12 @@ def generate(request):
     raw = request.body.decode('utf-8')
     data = json.loads(raw)
     #print(data)
+    init_constants()
     init_data(data)
-    return HttpResponse("fuck you");
+    #print(grade_courses)
+    answer = generate_for_grades(rooms, profs, courses, grade_courses)
+    #print(grade_courses)
+    return HttpResponse(str(answer));
 
 def index(request):
     return render(request, 'main/index.html')
