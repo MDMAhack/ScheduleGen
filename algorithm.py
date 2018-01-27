@@ -70,10 +70,10 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
                 days = []
                 if n == 2:
                     days = [[1, 3], [2, 4]]
-                    days = days[randint(0, 1)]
+                    days = [days[randint(0, 1)]]
                 if n == 1:
                     days = [1, 2, 3, 4, 5]
-                    days = days[randint(0, 4)]
+                    days = [days[randint(0, 4)]]
                 if n == 3:
                     days = [1, 3, 5]
                 for prof in course.profs:

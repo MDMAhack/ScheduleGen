@@ -71,7 +71,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "nav {\n  text-align: center;\n  font-size: 25px;\n  background-color: white;\n}\n\n.title {\n  margin-top: 10px;\n}\n\na {\n  color: red;\n  text-decoration: none;\n}\n\na:hover {\n  font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -84,7 +84,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h1>{{title}}</h1>\n<nav>\n  <a routerLink='/dashboard' routerLinkActive=\"active\">Dashboard</a>\n  <a routerLink='/course-list' routerLinkActive=\"active\">Course list</a>\n  <a routerLink='/prof-list' routerLinkActive=\"active\">Prof list</a>\n  <a routerLink='/room-list' routerLinkActive=\"active\">Room list</a>\n</nav>\n<router-outlet></router-outlet>\n<h3>\n  Made under 24 hours by team MDMA.\n</h3>\n"
+module.exports = "<nav>\n  <h1 class=\"title\">Schedule generator</h1>\n  <a routerLink='/dashboard' routerLinkActive=\"active\">\n    Dashboard <i class = \"fa fa-home\"></i>\n  </a> |\n  <a routerLink='/course-list' routerLinkActive=\"active\">\n    Courses <i class = \"fa fa-book\"></i>\n  </a> |\n  <a routerLink='/prof-list' routerLinkActive=\"active\">\n    Professors <i class = \"fa fa-male\"></i>\n  </a> |\n  <a routerLink='/room-list' routerLinkActive=\"active\">\n    Rooms <i class = \"fa fa fa-map-marker\"></i>\n  </a>\n</nav>\n\n<router-outlet></router-outlet>\n\n<div class=\"fixed-bottom\">\n  <hr>\n  <div style=\"text-align:center\">\n    <button style = \"width: 50%; margin-bottom: 10px;\" class=\"btn btn-success\" (click)='generate()'>Generate</button>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -94,23 +94,77 @@ module.exports = "<h1>{{title}}</h1>\n<nav>\n  <a routerLink='/dashboard' router
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__("../../../../rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/catch.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/toPromise.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__courses_course_service__ = __webpack_require__("../../../../../src/app/courses/course.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__profs_prof_service__ = __webpack_require__("../../../../../src/app/profs/prof.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rooms_room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
 
 var AppComponent = /** @class */ (function () {
-    function AppComponent() {
+    function AppComponent(http, courseService, profService, roomService) {
+        this.http = http;
+        this.courseService = courseService;
+        this.profService = profService;
+        this.roomService = roomService;
         this.title = 'Schedule generator';
+        this.url = './generate/';
     }
+    AppComponent.prototype.submit = function () {
+        var courses = this.courseService.getCourses();
+        var profs = this.profService.getProfs();
+        var rooms = this.roomService.getRooms();
+        var raw = { "courses": courses, "profs": profs, "rooms": rooms };
+        console.log(raw);
+        var json = JSON.stringify(raw);
+        console.log(json);
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* RequestOptions */]({ headers: headers });
+        return this.http.post(this.url, json, options).map(this.extractData);
+    };
+    AppComponent.prototype.generate = function () {
+        //console.log(JSON.stringify(courseService.getCourses()));
+        //console.log(this.url);
+        this.submit().subscribe(function (b) { return console.log(b); });
+    };
+    AppComponent.prototype.extractData = function (res) {
+        console.log("WTF");
+        var body = res.json();
+        console.log(body);
+        return body || {};
+    };
+    AppComponent.prototype.handleErrorObservable = function (error) {
+        console.error(error.message || error);
+        return __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].throw(error.message || error);
+    };
     AppComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'app-root',
             template: __webpack_require__("../../../../../src/app/app.component.html"),
             styles: [__webpack_require__("../../../../../src/app/app.component.css")]
-        })
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_6__courses_course_service__["a" /* CourseService */], __WEBPACK_IMPORTED_MODULE_7__profs_prof_service__["a" /* ProfService */], __WEBPACK_IMPORTED_MODULE_8__rooms_room_service__["a" /* RoomService */]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -127,24 +181,26 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__("../../../platform-browser/esm5/platform-browser.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__("../../../forms/esm5/forms.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__dashboard_dashboard_component__ = __webpack_require__("../../../../../src/app/dashboard/dashboard.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__courses_course_list_course_list_component__ = __webpack_require__("../../../../../src/app/courses/course-list/course-list.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__profs_prof_list_prof_list_component__ = __webpack_require__("../../../../../src/app/profs/prof-list/prof-list.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rooms_room_list_room_list_component__ = __webpack_require__("../../../../../src/app/rooms/room-list/room-list.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__courses_course_detail_course_detail_component__ = __webpack_require__("../../../../../src/app/courses/course-detail/course-detail.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__profs_prof_detail_prof_detail_component__ = __webpack_require__("../../../../../src/app/profs/prof-detail/prof-detail.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__rooms_room_detail_room_detail_component__ = __webpack_require__("../../../../../src/app/rooms/room-detail/room-detail.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__app_routing_module__ = __webpack_require__("../../../../../src/app/app-routing.module.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__courses_course_service__ = __webpack_require__("../../../../../src/app/courses/course.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__profs_prof_service__ = __webpack_require__("../../../../../src/app/profs/prof.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__rooms_room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dashboard_dashboard_component__ = __webpack_require__("../../../../../src/app/dashboard/dashboard.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__courses_course_list_course_list_component__ = __webpack_require__("../../../../../src/app/courses/course-list/course-list.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__profs_prof_list_prof_list_component__ = __webpack_require__("../../../../../src/app/profs/prof-list/prof-list.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rooms_room_list_room_list_component__ = __webpack_require__("../../../../../src/app/rooms/room-list/room-list.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__courses_course_detail_course_detail_component__ = __webpack_require__("../../../../../src/app/courses/course-detail/course-detail.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__profs_prof_detail_prof_detail_component__ = __webpack_require__("../../../../../src/app/profs/prof-detail/prof-detail.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__rooms_room_detail_room_detail_component__ = __webpack_require__("../../../../../src/app/rooms/room-detail/room-detail.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__app_routing_module__ = __webpack_require__("../../../../../src/app/app-routing.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__courses_course_service__ = __webpack_require__("../../../../../src/app/courses/course.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__profs_prof_service__ = __webpack_require__("../../../../../src/app/profs/prof.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__rooms_room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -166,22 +222,23 @@ var AppModule = /** @class */ (function () {
     AppModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */],
-                __WEBPACK_IMPORTED_MODULE_4__dashboard_dashboard_component__["a" /* DashboardComponent */],
-                __WEBPACK_IMPORTED_MODULE_5__courses_course_list_course_list_component__["a" /* CourseListComponent */],
-                __WEBPACK_IMPORTED_MODULE_6__profs_prof_list_prof_list_component__["a" /* ProfListComponent */],
-                __WEBPACK_IMPORTED_MODULE_7__rooms_room_list_room_list_component__["a" /* RoomListComponent */],
-                __WEBPACK_IMPORTED_MODULE_8__courses_course_detail_course_detail_component__["a" /* CourseDetailComponent */],
-                __WEBPACK_IMPORTED_MODULE_9__profs_prof_detail_prof_detail_component__["a" /* ProfDetailComponent */],
-                __WEBPACK_IMPORTED_MODULE_10__rooms_room_detail_room_detail_component__["a" /* RoomDetailComponent */],
+                __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
+                __WEBPACK_IMPORTED_MODULE_5__dashboard_dashboard_component__["a" /* DashboardComponent */],
+                __WEBPACK_IMPORTED_MODULE_6__courses_course_list_course_list_component__["a" /* CourseListComponent */],
+                __WEBPACK_IMPORTED_MODULE_7__profs_prof_list_prof_list_component__["a" /* ProfListComponent */],
+                __WEBPACK_IMPORTED_MODULE_8__rooms_room_list_room_list_component__["a" /* RoomListComponent */],
+                __WEBPACK_IMPORTED_MODULE_9__courses_course_detail_course_detail_component__["a" /* CourseDetailComponent */],
+                __WEBPACK_IMPORTED_MODULE_10__profs_prof_detail_prof_detail_component__["a" /* ProfDetailComponent */],
+                __WEBPACK_IMPORTED_MODULE_11__rooms_room_detail_room_detail_component__["a" /* RoomDetailComponent */],
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-                __WEBPACK_IMPORTED_MODULE_11__app_routing_module__["a" /* AppRoutingModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormsModule */]
+                __WEBPACK_IMPORTED_MODULE_12__app_routing_module__["a" /* AppRoutingModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormsModule */],
+                __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */]
             ],
-            providers: [__WEBPACK_IMPORTED_MODULE_12__courses_course_service__["a" /* CourseService */], __WEBPACK_IMPORTED_MODULE_13__profs_prof_service__["a" /* ProfService */], __WEBPACK_IMPORTED_MODULE_14__rooms_room_service__["a" /* RoomService */]],
-            bootstrap: [__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */]]
+            providers: [__WEBPACK_IMPORTED_MODULE_13__courses_course_service__["a" /* CourseService */], __WEBPACK_IMPORTED_MODULE_14__profs_prof_service__["a" /* ProfService */], __WEBPACK_IMPORTED_MODULE_15__rooms_room_service__["a" /* RoomService */]],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
         })
     ], AppModule);
     return AppModule;
@@ -212,7 +269,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/courses/course-detail/course-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='course'>\n\n    <ul>\n      <li>\n        <label for=\"name\">Name</label>\n        <input type=\"text\" id=\"name\" required [(ngModel)]=\"course.name\"/>\n      </li>\n\n      <li>\n        <label for=\"section-cnt\">Section count</label>\n        <input type=\"number\" id=\"section-cnt\" required [(ngModel)]=\"course.sectionCnt\"/>\n      </li>\n\n      <li>\n        <label for=\"section-cnt\">Capacity</label>\n        <input type=\"number\" id=\"capacity\" required [(ngModel)]=\"course.capacity\"/>\n      </li>\n\n      <li>\n        <label for=\"section-cnt\">Grade</label>\n        <input type=\"number\" id=\"grade\" required [(ngModel)]=\"course.grade\"/>\n      </li>\n\n      <li>\n        <label for=\"class-cnt\">Classses</label>\n        <div *ngFor='let class of course.classList'>\n          <input type=\"text\" id=\"class-type\" required [(ngModel)]=\"class.type\"/>\n          <input type=\"number\" id=\"class-duration\" required [(ngModel)]=\"class.duration\"/>\n        </div>\n        <a (click)='addClass(course)'>add class (+)</a>\n      </li>\n    </ul>\n\n</div>\n"
+module.exports = "<div *ngIf='course'>\n\n    <div class=\"form-group row\">\n      <label class=\"col-sm-2 col-form-label\" for=\"name\">Name</label>\n      <div class=\"col-sm-10\">\n        <input class=\"form-control\" type=\"text\" id=\"name\" required [(ngModel)]=\"course.name\"/>\n      </div>\n    </div>\n\n    <div class=\"form-group row\">\n      <label class=\"col-sm-2 col-form-label\" for=\"section-cnt\">Section count</label>\n      <div class=\"col-sm-10\">\n        <input class=\"form-control\" type=\"number\" id=\"section-cnt\" required [(ngModel)]=\"course.sectionCnt\"/>\n      </div>\n    </div>\n\n    <div class=\"form-group row\">\n      <label class=\"col-sm-2 col-form-label\" for=\"section-cnt\">Capacity</label>\n      <div class=\"col-sm-10\">\n        <input class=\"form-control\" type=\"number\" id=\"capacity\" required [(ngModel)]=\"course.capacity\"/>\n      </div>\n    </div>\n\n    <div class=\"form-group row\">\n      <label class=\"col-sm-2 col-form-label\" for=\"section-cnt\">Grade</label>\n      <div class=\"col-sm-10\">\n        <select class=\"form-control\" type=\"number\" id=\"grade\" required [(ngModel)]=\"course.grade\">\n          <option value=\"freshman\">Freshman</option>\n          <option value=\"sophomore\">Sophomore</option>\n          <option value=\"junior\">Junior</option>\n          <option value=\"senior\">Senior</option>\n        </select>\n      </div>\n    </div>\n\n    <div class=\"form-group row\">\n      <label class=\"col-sm-2 col-form-label\" for=\"class-cnt\">Classes</label>\n      <div class=\"col-sm-10\">\n        <div *ngFor='let class of course.classList'>\n          <select class=\"form-control\" type=\"text\" id=\"class-type\" required [(ngModel)]=\"class.type\">\n            <option value=\"lecture\">Lecture</option>\n            <option value=\"lecture\">Practice</option>\n            <option value=\"lab\">Lab</option>\n          </select>\n        </div>\n        <button class=\"btn btn-success\" (click)='addClass(course)'>add class (+)</button>\n      </div>\n    </div>\n\n</div>\n"
 
 /***/ }),
 
@@ -273,7 +330,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".selected {\n  background-color: #CFD8DC !important;\n  color: white;\n}\n.courses {\n  margin: 0 0 2em 0;\n  list-style-type: none;\n  padding: 0;\n  width: 15em;\n}\n.courses li {\n  cursor: pointer;\n  position: relative;\n  left: 0;\n  background-color: #EEE;\n  margin: .5em;\n  padding: .3em 0;\n  height: 1.6em;\n  border-radius: 4px;\n}\n.courses li.selected:hover {\n  background-color: #BBD8DC !important;\n  color: white;\n}\n.courses li:hover {\n  color: #607D8B;\n  background-color: #DDD;\n  left: .1em;\n}\n.courses .text {\n  position: relative;\n  top: -3px;\n}\n.courses .badge {\n  display: inline-block;\n  font-size: small;\n  color: white;\n  padding: 0.8em 0.7em 0 0.7em;\n  background-color: #607D8B;\n  line-height: 1em;\n  position: relative;\n  left: -1px;\n  top: -4px;\n  height: 1.8em;\n  margin-right: .8em;\n  border-radius: 4px 0 0 4px;\n}\nbutton.delete {\n  float:right;\n  margin-top: 2px;\n  margin-right: .8em;\n  background-color: gray !important;\n  color:white;\n}\n", ""]);
+exports.push([module.i, ".mycard {\n  padding: 10px;\n  margin-top: 10px;\n}\n\n.sidebar {\n  border-right: 1px dashed grey;\n  font-size: 20px;\n}\n\n.side:hover {\n  cursor: pointer;\n  font-weight: bold;\n}\n\n.selected {\n  color: red !important;\n  padding-left: 10px;\n}\n", ""]);
 
 // exports
 
@@ -286,7 +343,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/courses/course-list/course-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"courses\">\n  <li *ngFor='let course of courses' [class.selected]=\"course === selectedCourse\" (click)=\"selectCourse(course)\">\n    <span>{{course.name}}</span>\n  </li>\n</ul>\n\n<a (click)=\"addCourse()\">ADD COURSE</a>\n\n<hr>\n<app-course-detail [course]=\"selectedCourse\"></app-course-detail>\n"
+module.exports = "<div class=\"container\">\n  <div class = \"mycard row\">\n    <div class = \"sidebar col-md-2\">\n      <div class=\"row\" *ngFor='let course of courses'>\n        <a class = \"side\" [class.selected]=\"course === selectedCourse\" (click)=\"selectCourse(course)\">\n          <span>{{course.name}}</span>\n        </a>\n      </div>\n      <div class=\"row\">\n        <button class=\"btn btn-success\" (click)=\"addCourse()\">ADD COURSE</button>\n      </div>\n    </div>\n    <div class = \"col-md-10\">\n      <app-course-detail [course]=\"selectedCourse\"></app-course-detail>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -315,6 +372,9 @@ var CourseListComponent = /** @class */ (function () {
     }
     CourseListComponent.prototype.ngOnInit = function () {
         this.getCourses();
+        if (this.courses.length > 0) {
+            this.selectedCourse = this.courses[0];
+        }
     };
     CourseListComponent.prototype.getCourses = function () {
         this.courses = this.courseService.getCourses();
@@ -358,18 +418,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var CourseService = /** @class */ (function () {
     function CourseService() {
-        this.courses = [];
+        this.courses = [
+            {
+                id: 1,
+                name: 'New course (1)',
+                classList: [],
+                capacity: 0,
+                grade: "freshman",
+                sectionCnt: 0
+            }
+        ];
     }
     CourseService.prototype.getCourses = function () {
         return this.courses;
     };
     CourseService.prototype.addCourse = function () {
+        var id = this.courses.length + 1;
         this.courses.push({
-            id: this.courses.length + 1,
-            name: 'New course',
+            id: id,
+            name: 'New course (' + id + ')',
             classList: [],
             capacity: 0,
-            grade: 0,
+            grade: "freshman",
             sectionCnt: 0
         });
         return this.courses[this.courses.length - 1];
@@ -486,7 +556,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "button {\n  background-color: #4CAF50; /* Green */\n  border: none;\n  color: white;\n  text-align: center;\n  text-decoration: none;\n  display: inline-block;\n  font-size: 16px;\n}\n\n.toggled {\n  background-color: red;\n}\n\nbutton:hover {\n  opacity: 0.5;\n}\n", ""]);
+exports.push([module.i, ".cell {\n  background-color: #4CAF50; /* Green */\n  border: none;\n  color: white;\n  text-align: center;\n  text-decoration: none;\n  display: inline-block;\n  font-size: 16px;\n  padding: 4px;\n  margin: 1px;\n  border-radius: 5px;\n}\n\n.cell:hover {\n  cursor: pointer;\n  opacity: 0.7;\n}\n\n.toggled {\n  background-color: #ff6666;\n}\n", ""]);
 
 // exports
 
@@ -499,7 +569,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/profs/prof-detail/prof-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='prof'>\n\n    <ul>\n      <li>\n        <label for=\"name\">Name</label>\n        <input type=\"text\" id=\"name\" required [(ngModel)]=\"prof.name\"/>\n      </li>\n\n      <li>\n        <label for=\"rank\">Prof's rank</label>\n        <input type=\"number\" id=\"rank\" required [(ngModel)]=\"prof.rank\"/>\n      </li>\n\n      <li>\n        <span *ngFor='let i of forIn' (click)='toggle(i)'>\n          <button [class.toggled]='prof.isAvailable[i]===false'>\n            {{i}}\n          </button>\n        </span>\n      </li>\n\n      <li>\n        <label for=\"courses-available\">Courses available</label>\n        <ul>\n          {{prof.coursesAvailable.length}}\n          <select multiple [(ngModel)]='prof.coursesAvailable'>\n            <option *ngFor='let course of courses' value='{{course.id}}'>!{{course.name}}</option>\n          </select>\n        </ul>\n        <span *ngFor='let x of prof.coursesAvailable'>{{x}}</span>\n      </li>\n\n    </ul>\n\n</div>\n"
+module.exports = "<div *ngIf='prof'>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"name\">Name</label>\n    <div class=\"col-sm-10\">\n      <input class=\"form-control\" type=\"text\" id=\"name\" required [(ngModel)]=\"prof.name\"/>\n    </div>\n  </div>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"rank\">Hours</label>\n    <div class=\"col-sm-10\">\n      <select class=\"form-control\" type=\"number\" id=\"rank\" required [(ngModel)]=\"prof.rank\">\n        <option value=1>1-3 hours</option>\n        <option value=2>3-6 hours</option>\n        <option value=3>6-10 hours</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\">Available time</label>\n    <div class=\"col-sm-10\">\n      <table>\n        <tr *ngFor='let c of columns'>\n          <td>{{dayof[c]}}: </td>\n          <td *ngFor='let r of rows'>\n            <div (click)=\"toggle(c*6+r)\" class=\"cell\" [class.toggled]='prof.isAvailable[c * 6 + r]===false'>\n              {{timeof[r]}}\n            </div>\n          </td>\n        </tr>\n      </table>\n    </div>\n  </div>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"courses-available\">Courses<br> ({{prof.coursesAvailable.length}} picked)</label>\n    <div class=\"col-sm-10\">\n      <select class=\"form-control\" multiple [(ngModel)]='prof.coursesAvailable'>\n        <option *ngFor='let course of courses' value='{{course.id}}'>{{course.name}}</option>\n      </select>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -529,14 +599,33 @@ var ProfDetailComponent = /** @class */ (function () {
     function ProfDetailComponent(profService, courseService) {
         this.profService = profService;
         this.courseService = courseService;
-        this.forIn = [];
-        for (var i = 0; i < 30; i++)
-            this.forIn.push(i);
+        this.timeof = [
+            '09:00-10:15',
+            '10:30-11:45',
+            '13:00-14:15',
+            '14:30-15:45',
+            '16:00-17:15',
+            '17:30-18:45'
+        ];
+        this.dayof = [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday'
+        ];
+        this.rows = [];
+        this.columns = [];
+        for (var i = 0; i < 5; i++)
+            this.columns.push(i);
+        for (var i = 0; i < 6; i++)
+            this.rows.push(i);
     }
     ProfDetailComponent.prototype.ngOnInit = function () {
         this.courses = this.courseService.getCourses();
     };
     ProfDetailComponent.prototype.toggle = function (id) {
+        console.log(id + "toggled");
         if (this.prof.isAvailable[id] === true)
             this.prof.isAvailable[id] = false;
         else
@@ -569,7 +658,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".mycard {\n  padding: 10px;\n  margin-top: 10px;\n}\n\n.sidebar {\n  border-right: 1px dashed grey;\n  font-size: 20px;\n}\n\n.side:hover {\n  cursor: pointer;\n  font-weight: bold;\n}\n\n.selected {\n  color: red !important;\n  padding-left: 10px;\n}\n", ""]);
 
 // exports
 
@@ -582,7 +671,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/profs/prof-list/prof-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngFor='let prof of profs'>\n  <button (click)=\"selectProf(prof)\">{{prof.name}}</button><br>\n</div>\n\n<a (click)=\"addProf()\">ADD PROF</a>\n\n<hr>\n<app-prof-detail [prof]=\"selectedProf\"></app-prof-detail>\n"
+module.exports = "<div class=\"container\">\n  <div class = \"mycard row\">\n    <div class=\"sidebar col-md-2\">\n      <div class=\"row\" *ngFor='let prof of profs'>\n        <a class=\"side\" [class.selected] = \"prof === selectedProf\" (click)=\"selectProf(prof)\">\n          <span>{{prof.name}}</span>\n        </a>\n      </div>\n      <div class=\"row\">\n        <button class=\"btn btn-success\" (click)=\"addProf()\">ADD PROFESSOR</button>\n      </div>\n    </div>\n    <div class=\"col-md-10\">\n      <app-prof-detail [prof]=\"selectedProf\"></app-prof-detail>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -611,6 +700,9 @@ var ProfListComponent = /** @class */ (function () {
     }
     ProfListComponent.prototype.ngOnInit = function () {
         this.getProfs();
+        if (this.profs.length > 0) {
+            this.selectedProf = this.profs[0];
+        }
     };
     ProfListComponent.prototype.getProfs = function () {
         this.profs = this.profService.getProfs();
@@ -656,7 +748,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var ProfService = /** @class */ (function () {
     function ProfService() {
-        this.profs = [];
+        this.profs = [new __WEBPACK_IMPORTED_MODULE_1__prof__["a" /* Prof */](1)];
     }
     ProfService.prototype.getProfs = function () {
         return this.profs;
@@ -684,7 +776,7 @@ var ProfService = /** @class */ (function () {
 var Prof = /** @class */ (function () {
     function Prof(id) {
         this.id = id;
-        this.name = "Professor (" + this.id + ")";
+        this.name = "New professor (" + this.id + ")";
         this.rank = 0;
         this.isAvailable = [];
         for (var i = 0; i < 30; i++)
@@ -719,7 +811,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/rooms/room-detail/room-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  room-detail works!\n</p>\n"
+module.exports = "<div *ngIf='room'>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"name\">Name</label>\n    <div class=\"col-sm-10\">\n      <input class=\"form-control\" type=\"text\" id=\"name\" required [(ngModel)]=\"room.name\"/>\n    </div>\n  </div>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"capacity\">Capacity</label>\n    <div class=\"col-sm-10\">\n      <input class=\"form-control\" type=\"number\" required [(ngModel)]=\"room.capacity\"/>\n    </div>\n  </div>\n\n  <div class=\"form-group row\">\n    <label class=\"col-sm-2 col-form-label\" for=\"type\">Type</label>\n    <div class=\"col-sm-10\">\n      <select class=\"form-control\" type=\"text\" id=\"type\" required [(ngModel)]=\"room.type\">\n        <option value=\"lecture\">Lecture</option>\n        <option value=\"lecture\">Practice</option>\n        <option value=\"lab\">Lab</option>\n      </select>\n    </div>\n  </div>\n\n</div>\n"
 
 /***/ }),
 
@@ -729,6 +821,7 @@ module.exports = "<p>\n  room-detail works!\n</p>\n"
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoomDetailComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__room__ = __webpack_require__("../../../../../src/app/rooms/room.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -739,11 +832,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var RoomDetailComponent = /** @class */ (function () {
     function RoomDetailComponent() {
     }
     RoomDetailComponent.prototype.ngOnInit = function () {
     };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["D" /* Input */])(),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__room__["a" /* Room */])
+    ], RoomDetailComponent.prototype, "room", void 0);
     RoomDetailComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'app-room-detail',
@@ -767,7 +865,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".mycard {\n  padding: 10px;\n  margin-top: 10px;\n}\n\n.sidebar {\n  border-right: 1px dashed grey;\n  font-size: 20px;\n}\n\n.side:hover {\n  cursor: pointer;\n  font-weight: bold;\n}\n\n.selected {\n  color: red !important;\n  padding-left: 10px;\n}\n", ""]);
 
 // exports
 
@@ -780,7 +878,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/rooms/room-list/room-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "to-do\n"
+module.exports = "<div class=\"container\">\n  <div class=\"mycard row\">\n    <div class=\"sidebar col-md-2\">\n      <div class=\"row\" *ngFor=\"let room of rooms\">\n        <a class=\"side\" [class.selected] = \"room === selectedRoom\" (click) = \"selectRoom(room)\">\n          <span>{{room.name}}</span>\n        </a>\n      </div>\n      <div class=\"row\">\n        <button class=\"btn btn-success\" (click)=\"addRoom()\">ADD ROOM</button>\n      </div>\n    </div>\n    <div class=\"col-md-10\">\n      <app-room-detail [room]=\"selectedRoom\"></app-room-detail>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -790,6 +888,7 @@ module.exports = "to-do\n"
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoomListComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -800,10 +899,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var RoomListComponent = /** @class */ (function () {
-    function RoomListComponent() {
+    function RoomListComponent(roomService) {
+        this.roomService = roomService;
+        this.rooms = [];
     }
     RoomListComponent.prototype.ngOnInit = function () {
+        this.getRooms();
+        if (this.rooms.length > 0) {
+            this.selectedRoom = this.rooms[0];
+        }
+    };
+    RoomListComponent.prototype.getRooms = function () {
+        this.rooms = this.roomService.getRooms();
+    };
+    RoomListComponent.prototype.addRoom = function () {
+        this.selectedRoom = this.roomService.addRoom();
+    };
+    RoomListComponent.prototype.selectRoom = function (room) {
+        this.selectedRoom = room;
     };
     RoomListComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -811,7 +926,7 @@ var RoomListComponent = /** @class */ (function () {
             template: __webpack_require__("../../../../../src/app/rooms/room-list/room-list.component.html"),
             styles: [__webpack_require__("../../../../../src/app/rooms/room-list/room-list.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__room_service__["a" /* RoomService */]])
     ], RoomListComponent);
     return RoomListComponent;
 }());
@@ -838,12 +953,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var RoomService = /** @class */ (function () {
     function RoomService() {
+        this.rooms = [{
+                name: "New room (1)",
+                type: "lecture",
+                capacity: 0
+            }];
     }
+    RoomService.prototype.getRooms = function () {
+        return this.rooms;
+    };
+    RoomService.prototype.addRoom = function () {
+        var id = this.rooms.length + 1;
+        this.rooms.push({
+            name: "New room (" + id + ")",
+            type: "lecture",
+            capacity: 0
+        });
+        return this.rooms[this.rooms.length - 1];
+    };
     RoomService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
         __metadata("design:paramtypes", [])
     ], RoomService);
     return RoomService;
+}());
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/rooms/room.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Room; });
+var Room = /** @class */ (function () {
+    function Room() {
+    }
+    return Room;
 }());
 
 
