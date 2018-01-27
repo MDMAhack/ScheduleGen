@@ -11,6 +11,7 @@ profs = []
 courses = []
 
 def init_data(data):
+    hours = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30']
     global rooms
     global profs
     global courses
