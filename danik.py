@@ -1,32 +1,35 @@
 class Room:
-    def __init__():
-        this.capacity = 0
-        this.name = ''
-        this.occupied = []
+    def __init__(self):
+        self.capacity = 0
+        self.name = ''
+        self.occupied = []
 
 class Course:
-    def __init__():
-        this.capacity = 0
-        this.name = ''
-        this.sections_num = 0
-        this.grade = 0
-        this.classes = []
-        this.profs = []
+    def __init__(self):
+        self.capacity = 0
+        self.name = ''
+        self.sections_num = 0
+        self.grade = 0
+        self.classes = []
+        self.profs = []
 
 class Prof:
-    def __init__():
-        this.rank = 0
-        this.status = 0
-        this.name = ''
-        this.occupied = []
+    def __init__(self):
+        self.rank = 0
+        self.status = 0
+        self.name = ''
+        self.occupied = []
+
+
 
 class Class:
     def __init__():
-        this.time = ''
-        this.id = 0
-        this.type = ''
+        self.time = ''
+        self.id = 0
+        self.type = ''
 
 days = [1, 3, 5, 2, 4, 6]
+hours = []
 
 for course in courses:
     for section in course.sections:
@@ -43,7 +46,7 @@ for course in courses:
                     for _class in classes:
                         is_assigned = False
                         for room in rooms[_class.type]:
-                             if not room.is_occupied(day, hour, len(classes)):
+                             if not room.is_occupied(day, hour, len(classes)) and room.capacity >= course.capacity:
                                  room_assigned = True
                                  rooms_assigned.append(room)
                                  break
