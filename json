@@ -1,0 +1,78 @@
+{
+"courses":[
+{
+  "id":1,
+  "name":"New course",
+  "classList":[
+  {
+    "type":"lab",
+    "duration":75
+  }],
+  "capacity":0,
+  "grade":0,
+  "sectionCnt":0
+},
+{
+  "id":2,
+  "name":"New course 2",
+  "classList":[
+  {
+  "type":"lecture",
+  "duration":75
+  }
+  ],
+  "capacity":0,
+  "grade":0,
+  "sectionCnt":0
+}],
+
+"profs":[
+{
+  "id":1,
+  "name":"Professor (1)",
+  "rank":2,
+  "isAvailable":[
+  false,
+  false,
+  false,
+  false,
+  true,
+  true,
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false
+  ],
+  "coursesAvailable":[
+  "1",
+  "2"]
+}],
+
+"rooms":[
+{
+"name":"New room",
+"type":"",
+"capacity":0
+}
+]
+}

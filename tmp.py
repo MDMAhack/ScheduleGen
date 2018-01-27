@@ -11,8 +11,7 @@ class Room:
         occupied.append(str(day) + str(hour))
 
 class Course:
-    def __init__(self, id, capacity, name, grade, sections):
-        self.id = id
+    def __init__(self, capacity, name, grade, sections):
         self.capacity = capacity
         self.name = name
         self.grade = grade
@@ -38,10 +37,12 @@ class Section:
         self.id = id
         self.classes = classes
 
+
 grade_courses = []
 grades = ['freshman', 'sophomore', 'junior', 'senior']
 days = [[5], [2, 4], [1, 3, 5]]
 hours = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30']
+
 
 def generate_for_grades():
     for grade in grades:
@@ -58,8 +59,9 @@ def generate_for_grades():
                     assigned_room = []
                     for i in range(n):
                         for room in rooms[classes[i].type]:
-                            if room.capacity >= course.capacity and not (room.is_occupied(days[n][i], hour)
-                            and prof.is_occupied(days[n][i], hour)
+                            if room.capacity >= course.capacity
+                            and not (room.is_occupied(days[n][i], hour)
+                            and prof.is_occupied(days[n][i], hour
                             and (str(day) + str(hour)) in occupied):
                                 assigned_room.append(room)
                                 break
@@ -69,7 +71,8 @@ def generate_for_grades():
                             assigned_room[i].occupy(days[n][i], hour)
                             prof.occupy(days[n][i], hour)
                             occupied.append(str(day) + str(hour))
-                            #answer.append(course.name + ' ' + assigned_room[i] + ' ' + days[n][i] + ' ' + hour +)
+                            answer.append(course.name + ' ' + assigned_room[i]
+                            + ' ' + days[n][i] + ' ' + hour +)
 
             del course.sections[0]
 '''
