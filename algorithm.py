@@ -3,7 +3,7 @@ from random import randint
 class Room:
     def __init__(self, capacity, name, occupied):
         self.capacity = capacity
-        self.name = ''
+        self.name = name
         self.occupied = []
 
     def is_occupied(self, day, hour):
@@ -47,12 +47,16 @@ def init_constants():
     #global grade_courses
     global grades
     global hours
+    global day_str
     #grade_courses = {'freshman':set(), 'sophomore':set(), 'junior':set(), 'senior':set()}
     grades = ['freshman', 'sophomore', 'junior', 'senior']
     hours = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30']
+    day_str = {'1':'MON', '2':'TUE', '3':'WED', '4':'THU', '5':'FRI'}
 
 
 def generate_for_grades(rooms, profs, courses, grade_courses):
+    for room in rooms['lecture']:
+        print(room.name)
     days_comb = []
     days_comb.append([[1], [2], [3], [4], [5]])
     days_comb.append([[1, 3], [2, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
@@ -94,7 +98,7 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
                                     prof.occupy(days[i], hour)
                                     occupied.append(str(days[i]) + str(hour))
                                     answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
-                                    tmp_list.append({'day':days[i], 'hour':hour, 'room':assigned_room[i].name})
+                                    tmp_list.append({'day':day_str[str(days[i])], 'hour':hour, 'room':assigned_room[i].name})
                                 tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
                                 data['sections'].append(tmp_dict)
                                 prof.status = prof.status + 1
@@ -143,7 +147,7 @@ def generate_others(rooms, profs, courses, answer, data):
                                 assigned_room[i].occupy(days[i], hour)
                                 prof.occupy(days[i], hour)
                                 answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
-                                tmp_list.append({'day':days[i], 'hour':hour, 'room':assigned_room[i].name})
+                                tmp_list.append({'day':day_str[str(days[i])], 'hour':hour, 'room':assigned_room[i].name})
                             tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
                             data['sections'].append(tmp_dict)
 

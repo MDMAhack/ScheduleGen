@@ -27,9 +27,8 @@ def init_data(data):
     for room_dic in data['rooms']:
         if not (room_dic['type'] in rooms.keys()):
             rooms[room_dic['type']] = []
-        print('Fuck you', int(room_dic['capacity']))
         rooms[room_dic['type']].append(Room(int(room_dic['capacity']), room_dic['name'], []))
-
+        #print('Bitch', rooms[room_dic['type']][-1].name)
     for course_dic in data['courses']:
         section_list = []
         capacity = course_dic['capacity']
