@@ -83,6 +83,15 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
                 for prof in course.profs:
                     if prof.status >= prof.rank:
                         continue
+                    if n == 1:
+                        random.shuffle(days_comb[n])
+                    elif n == 2:
+                        p1 = randint(0, 2)
+                        days_comb[n][0], days_comb[n][p1] = days_comb[n][p1], days_comb[n][0]
+                        p2 = randint(1, 2)
+                        days_comb[n][1], days_comb[n][p2] = days_comb[n][p2], days_comb[n][1]
+                    else:
+                        random.shuffle(days_comb[n])
                     for days in days_comb[n]:
                         for hour in hours:
                             assigned_room = []
