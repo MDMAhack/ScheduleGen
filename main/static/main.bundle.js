@@ -84,7 +84,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav>\n  <h1 class=\"title\">Schedule generator</h1>\n  <a routerLink='/dashboard' routerLinkActive=\"active\">\n    Dashboard <i class = \"fa fa-home\"></i>\n  </a> |\n  <a routerLink='/course-list' routerLinkActive=\"active\">\n    Courses <i class = \"fa fa-book\"></i>\n  </a> |\n  <a routerLink='/prof-list' routerLinkActive=\"active\">\n    Professors <i class = \"fa fa-male\"></i>\n  </a> |\n  <a routerLink='/room-list' routerLinkActive=\"active\">\n    Rooms <i class = \"fa fa fa-map-marker\"></i>\n  </a>\n</nav>\n\n<router-outlet></router-outlet>\n\n<div class=\"fixed-bottom\">\n  <hr>\n  <div style=\"text-align:center\">\n    <button style = \"width: 50%; margin-bottom: 10px;\" class=\"btn btn-success\" (click)='generate()'>Generate</button>\n  </div>\n</div>\n"
+module.exports = "<nav>\n  <h1 class=\"title\">Schedule generator</h1>\n  <a routerLink='/dashboard' routerLinkActive=\"active\">\n    Dashboard <i class = \"fa fa-home\"></i>\n  </a> |\n  <a routerLink='/course-list' routerLinkActive=\"active\">\n    Courses <i class = \"fa fa-book\"></i>\n  </a> |\n  <a routerLink='/prof-list' routerLinkActive=\"active\">\n    Professors <i class = \"fa fa-male\"></i>\n  </a> |\n  <a routerLink='/room-list' routerLinkActive=\"active\">\n    Rooms <i class = \"fa fa fa-map-marker\"></i>\n  </a>\n</nav>\n\n<router-outlet></router-outlet>\n\n<!--<div class=\"fixed-bottom\">-->\n  <hr>\n  <div style=\"text-align: center\">\n    <button style = \"width: 50%; margin-bottom: 10px;\" class=\"btn btn-success\" (click)='generate()'>Generate</button>\n  </div>\n\n  <div style=\"text-align: center\" *ngIf=\"result\">\n    <table class=\"table\">\n      <tr>\n        <th>id</th>\n        <th>course name</th>\n        <th>professor</th>\n        <th>classes (day / time / room)</th>\n      </tr>\n      <tr *ngFor=\"let section of result.sections\">\n        <td>{{section.section_id}}</td>\n        <td>{{section.course_name}}</td>\n        <td>{{section.prof}}</td>\n        <td>\n          <span *ngFor=\"let class of section.classes\">\n            {{class.day}} / {{class.hour}} / {{class.room}}<br>\n          </span>\n        </td>\n      </tr>\n    </table>\n  </div>\n<!--</div>-->\n"
 
 /***/ }),
 
@@ -95,15 +95,13 @@ module.exports = "<nav>\n  <h1 class=\"title\">Schedule generator</h1>\n  <a rou
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__("../../../../rxjs/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/catch.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/toPromise.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_toPromise__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__courses_course_service__ = __webpack_require__("../../../../../src/app/courses/course.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__profs_prof_service__ = __webpack_require__("../../../../../src/app/profs/prof.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rooms_room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/catch.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_toPromise__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/toPromise.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_toPromise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_toPromise__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__courses_course_service__ = __webpack_require__("../../../../../src/app/courses/course.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__profs_prof_service__ = __webpack_require__("../../../../../src/app/profs/prof.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rooms_room_service__ = __webpack_require__("../../../../../src/app/rooms/room.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -113,7 +111,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -144,19 +141,19 @@ var AppComponent = /** @class */ (function () {
         return this.http.post(this.url, json, options).map(this.extractData);
     };
     AppComponent.prototype.generate = function () {
-        //console.log(JSON.stringify(courseService.getCourses()));
-        //console.log(this.url);
-        this.submit().subscribe(function (b) { return console.log(b); });
+        var _this = this;
+        this.result = null;
+        this.submit().subscribe(function (data) { return _this.show(data); });
+    };
+    AppComponent.prototype.show = function (json) {
+        console.log(json);
+        var res = json;
+        this.result = res;
     };
     AppComponent.prototype.extractData = function (res) {
-        console.log("WTF");
         var body = res.json();
         console.log(body);
         return body || {};
-    };
-    AppComponent.prototype.handleErrorObservable = function (error) {
-        console.error(error.message || error);
-        return __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].throw(error.message || error);
     };
     AppComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -164,7 +161,7 @@ var AppComponent = /** @class */ (function () {
             template: __webpack_require__("../../../../../src/app/app.component.html"),
             styles: [__webpack_require__("../../../../../src/app/app.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_6__courses_course_service__["a" /* CourseService */], __WEBPACK_IMPORTED_MODULE_7__profs_prof_service__["a" /* ProfService */], __WEBPACK_IMPORTED_MODULE_8__rooms_room_service__["a" /* RoomService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */], __WEBPACK_IMPORTED_MODULE_5__courses_course_service__["a" /* CourseService */], __WEBPACK_IMPORTED_MODULE_6__profs_prof_service__["a" /* ProfService */], __WEBPACK_IMPORTED_MODULE_7__rooms_room_service__["a" /* RoomService */]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -425,7 +422,7 @@ var CourseService = /** @class */ (function () {
                 classList: [],
                 capacity: 0,
                 grade: "freshman",
-                sectionCnt: 0
+                sectionCnt: 1
             }
         ];
     }
@@ -440,7 +437,7 @@ var CourseService = /** @class */ (function () {
             classList: [],
             capacity: 0,
             grade: "freshman",
-            sectionCnt: 0
+            sectionCnt: 1
         });
         return this.courses[this.courses.length - 1];
     };
@@ -495,7 +492,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".home {\n  text-align: center;\n  font-size: 20px;\n}\n", ""]);
 
 // exports
 
@@ -508,7 +505,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  dashboard works!\n</p>\n"
+module.exports = "<div class=\"home\">\n  <br>\n  <h3>Welcome!</h3>\n  <h4>\n    Create courses', professors' and rooms' list in the tabs above, <br>\n    then press generate button below!\n  </h4>\n  <br>\n  <font color=\"green\"><h2>Good luck!</h2></font>\n  <br><p>Created in 24 hours for hackaton by team MDMA<br></p>\n</div>\n"
 
 /***/ }),
 
@@ -777,10 +774,10 @@ var Prof = /** @class */ (function () {
     function Prof(id) {
         this.id = id;
         this.name = "New professor (" + this.id + ")";
-        this.rank = 0;
+        this.rank = 1;
         this.isAvailable = [];
         for (var i = 0; i < 30; i++)
-            this.isAvailable.push(false);
+            this.isAvailable.push(true);
         this.coursesAvailable = [];
     }
     return Prof;
@@ -956,7 +953,7 @@ var RoomService = /** @class */ (function () {
         this.rooms = [{
                 name: "New room (1)",
                 type: "lecture",
-                capacity: 0
+                capacity: 20
             }];
     }
     RoomService.prototype.getRooms = function () {
@@ -967,7 +964,7 @@ var RoomService = /** @class */ (function () {
         this.rooms.push({
             name: "New room (" + id + ")",
             type: "lecture",
-            capacity: 0
+            capacity: 20
         });
         return this.rooms[this.rooms.length - 1];
     };
