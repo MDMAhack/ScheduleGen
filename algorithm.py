@@ -121,7 +121,7 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
 def generate_others(rooms, profs, courses, answer, data):
     days_comb = []
     days_comb.append([[1], [2], [3], [4], [5]])
-    days_comb.append([[1, 3], [2, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
+    days_comb.append([[1, 3], [2, 4], [3, 5], [1, 4], [1, 5], [2, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
     days_comb.append([[1, 3, 5], [1, 3, 4], [1, 2, 4], [1, 2, 5], [2, 4, 5], [2, 3, 5]])
     for course in courses:
         print(course.name)
@@ -132,7 +132,16 @@ def generate_others(rooms, profs, courses, answer, data):
             for prof in course.profs:
                 if prof.status >= prof.rank:
                     continue
-                print("pidaras")
+                if n == 1:
+                    random.shuffle(days_comb[n])
+                elif n == 2:
+                    p1 = randint(0, 2)
+                    days_comb[n][0], days_comb[n][p1] = days_comb[n][p1], days_comb[n][0]
+                    p2 = randint(1, 2)
+                    days_comb[n][1], days_comb[n][p2] = days_comb[n][p2], days_comb[n][1]
+                else:
+                    random.shuffle(days_comb[n])
+
                 for days in days_comb[n]:
                     for hour in hours:
                         assigned_room = []
