@@ -70,9 +70,10 @@ def generate(request):
     init_constants()
     init_data(data)
     #print(grade_courses)
-    answer = generate_for_grades(rooms, profs, courses, grade_courses)
+    data = generate_for_grades(rooms, profs, courses, grade_courses)
+    raw = json.dumps(data)
     #print(grade_courses)
-    return HttpResponse(str(answer));
+    return HttpResponse(raw);
 
 def index(request):
     return render(request, 'main/index.html')

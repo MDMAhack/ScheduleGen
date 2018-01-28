@@ -53,8 +53,15 @@ def init_constants():
 
 
 def generate_for_grades(rooms, profs, courses, grade_courses):
+    days_comb = []
+    days_comb.append([[1], [2], [3], [4], [5]])
+    days_comb.append([[1, 3], [2, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
+    days_comb.append([[1, 3, 5], [1, 3, 4], [1, 2, 4], [1, 2, 5], [2, 4, 5], [2, 3, 5]])
     answer = []
+    data = {}
+    data['sections'] = []
     # TODO prof.occupied
+    # TODO room.type
     for grade in grades:
         occupied = []
         for classes_cnt in range(3, 0, -1):
@@ -67,75 +74,85 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
                 n = len(classes)
                 if classes_cnt != n:
                     continue
-                days = []
-                if n == 2:
-                    days = [[1, 3], [2, 4]]
-                    days = days[randint(0, 1)]
-                if n == 1:
-                    days = [1, 2, 3, 4, 5]
-                    days = days[randint(0, 4)]
-                if n == 3:
-                    days = [1, 3, 5]
                 for prof in course.profs:
                     if prof.status >= prof.rank:
                         continue
-                    for hour in hours:
-                        assigned_room = []
-                        for i in range(n):
-                            for room in rooms[classes[i]]:
-                                if room.capacity >= course.capacity:
-                                    if not (room.is_occupied(days[i], hour) and prof.is_occupied(days[i], hour) and (str(days[i]) + str(hour)) in occupied):
-                                        assigned_room.append(room)
-                                        break
-
-                        if len(assigned_room) == n:
+                    for days in days_comb[n]:
+                        for hour in hours:
+                            assigned_room = []
                             for i in range(n):
-                                assigned_room[i].occupy(days[i], hour)
-                                prof.occupy(days[i], hour)
-                                occupied.append(str(days[i]) + str(hour))
-                                answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
-                            done = True
+                                for room in rooms[classes[i]]:
+                                    if room.capacity >= course.capacity:
+                                        if not (room.is_occupied(days[i], hour) or prof.is_occupied(days[i], hour) or ((str(days[i]) + str(hour)) in occupied)):
+                                            assigned_room.append(room)
+                                            break
+
+                            if len(assigned_room) == n:
+                                tmp_list = []
+                                for i in range(n):
+                                    assigned_room[i].occupy(days[i], hour)
+                                    prof.occupy(days[i], hour)
+                                    occupied.append(str(days[i]) + str(hour))
+                                    answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
+                                    tmp_list.append({'day':days[i], 'hour':hour, 'room':assigned_room[i].name})
+                                tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
+                                data['sections'].append(tmp_dict)
+                                prof.status = prof.status + 1
+                                done = True
+                                break
+                        if done:
                             break
                     if done:
                         break
 
                 del course.sections[0]
-    return answer
-    #answer = generate_others(rooms, profs, courses, answer)
 
-'''def generate_others(rooms, profs, courses, answer):
+    #answer = generate_others(rooms, profs, courses, answer)
+    #return answer
+    data = generate_others(rooms, profs, courses, answer, data)
+    return data
+
+def generate_others(rooms, profs, courses, answer, data):
+    days_comb = []
+    days_comb.append([[1], [2], [3], [4], [5]])
+    days_comb.append([[1, 3], [2, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
+    days_comb.append([[1, 3, 5], [1, 3, 4], [1, 2, 4], [1, 2, 5], [2, 4, 5], [2, 3, 5]])
     for course in courses:
+        print(course.name)
         for section in course.sections:
             done = False
+            classes = section.classes
+            n = len(classes)
             for prof in course.profs:
                 if prof.status >= prof.rank:
                     continue
-                for day in days:
+                print("pidaras")
+                for days in days_comb[n]:
                     for hour in hours:
-                        classes = section.classes
-                        if prof.is_occupied(day, hour, len(classes)):
-                            continue
-                        rooms_assigned = []
-                        for _class in classes:
-                            room_assigned = False
-                            for room in rooms[_class.type]:
-                                 if not room.is_occupied(day, hour, len(classes)) and room.capacity >= course.capacity:
-                                     room_assigned = True
-                                     rooms_assigned.append(room)
-                                     break
-                            if not room_assigned:
-                                break
+                        assigned_room = []
+                        for i in range(n):
+                            for room in rooms[classes[i]]:
+                                if room.capacity >= course.capacity:
+                                    if not (room.is_occupied(days[i], hour) or prof.is_occupied(days[i], hour)):
+                                        assigned_room.append(room)
+                                        break
 
-                        if len(rooms_assigned) == len(classes):
-                            prof.occupy(day, hour, len(classes))
+                        if len(assigned_room) == n:
+                            tmp_list = []
+                            for i in range(n):
+                                assigned_room[i].occupy(days[i], hour)
+                                prof.occupy(days[i], hour)
+                                answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
+                                tmp_list.append({'day':days[i], 'hour':hour, 'room':assigned_room[i].name})
+                            tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
+                            data['sections'].append(tmp_dict)
+
                             prof.status = prof.status + 1
-                            for room in rooms_assigned:
-                                room.occupy(day, hour, len(classes))
                             done = True
                             break
-                        else:
-                            rooms_assigned = []
                     if done:
                         break
+
                 if done:
-                    break'''
+                    break
+    return data
