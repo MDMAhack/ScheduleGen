@@ -16,8 +16,10 @@ def init_data(data):
     global profs
     global courses
     global grade_courses
+    global grade_num
 
     grade_courses = {'freshman':set(), 'sophomore':set(), 'junior':set(), 'senior':set()}
+    grade_num = {'freshman':'1', 'sophomore':'2', 'junior':'3', 'senior':'4'}
     rooms = {}
     profs = []
     courses = []
@@ -29,7 +31,7 @@ def init_data(data):
             rooms[room_dic['type']] = []
         rooms[room_dic['type']].append(Room(int(room_dic['capacity']), room_dic['name'], []))
         #print('Bitch', rooms[room_dic['type']][-1].name)
-    for course_dic in data['courses']:
+    for it, course_dic in enumerate(data['courses']):
         section_list = []
         capacity = course_dic['capacity']
         course_name = course_dic['name']
@@ -40,7 +42,11 @@ def init_data(data):
             class_list = []
             for class_dic in course_dic['classList']:
                 class_list.append(class_dic['type'])
-            section_id = course_name + str(section_number)
+            #section_id = course_name + str(section_number)
+            section_id = 'ID' + grade_num[grade]
+            if it < 10:
+                section_id = section_id + '0'
+            section_id = section_id + str(it + 1) + str(section_number + 1)
             tmp_section = Section(section_id, class_list)
             section_list.append(tmp_section)
 
