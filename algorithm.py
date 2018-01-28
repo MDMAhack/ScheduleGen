@@ -1,4 +1,5 @@
 from random import randint
+import random
 
 class Room:
     def __init__(self, capacity, name, occupied):
@@ -59,7 +60,7 @@ def init_constants():
 def generate_for_grades(rooms, profs, courses, grade_courses):
     for room in rooms['lecture']:
         print(room.name)
-    days_comb = []
+    days_comb = [[]]
     days_comb.append([[1], [2], [3], [4], [5]])
     days_comb.append([[1, 3], [2, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 2], [2, 3], [3, 4]])
     days_comb.append([[1, 3, 5], [1, 3, 4], [1, 2, 4], [1, 2, 5], [2, 4, 5], [2, 3, 5]])
