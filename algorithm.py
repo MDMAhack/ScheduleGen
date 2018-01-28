@@ -48,9 +48,11 @@ def init_constants():
     global grades
     global hours
     global day_str
+    global hour_end
     #grade_courses = {'freshman':set(), 'sophomore':set(), 'junior':set(), 'senior':set()}
     grades = ['freshman', 'sophomore', 'junior', 'senior']
     hours = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30']
+    hour_end = {'09:00':'-10:15', '10:30':'-11:45', '13:00':'-14:15', '14:30':'-15:45', '16:00':'-17:15', '17:30':'-18:15'}
     day_str = {'1':'MON', '2':'TUE', '3':'WED', '4':'THU', '5':'FRI'}
 
 
@@ -98,7 +100,7 @@ def generate_for_grades(rooms, profs, courses, grade_courses):
                                     prof.occupy(days[i], hour)
                                     occupied.append(str(days[i]) + str(hour))
                                     answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
-                                    tmp_list.append({'day':day_str[str(days[i])], 'hour':hour, 'room':assigned_room[i].name})
+                                    tmp_list.append({'day':day_str[str(days[i])], 'hour':(hour+hour_end[hour]), 'room':assigned_room[i].name})
                                 tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
                                 data['sections'].append(tmp_dict)
                                 prof.status = prof.status + 1
@@ -147,7 +149,7 @@ def generate_others(rooms, profs, courses, answer, data):
                                 assigned_room[i].occupy(days[i], hour)
                                 prof.occupy(days[i], hour)
                                 answer.append(course.name + ' ' + assigned_room[i].name + ' ' + str(days[i]) + ' ' + hour)
-                                tmp_list.append({'day':day_str[str(days[i])], 'hour':hour, 'room':assigned_room[i].name})
+                                tmp_list.append({'day':day_str[str(days[i])], 'hour':(hour+hour_end[hour]), 'room':assigned_room[i].name})
                             tmp_dict = {'section_id':section.id, 'classes':tmp_list, 'prof':prof.name, 'course_name':course.name}
                             data['sections'].append(tmp_dict)
 
