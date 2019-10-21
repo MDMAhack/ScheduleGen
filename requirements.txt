@@ -5,7 +5,7 @@ chardet==3.0.4
 Django==2.0.1
 django-filter==1.1.0
 djangorestframework==3.7.7
-httpie==0.9.9
+httpie==1.0.3
 idna==2.6
 Markdown==2.6.11
 multidict==4.0.0
